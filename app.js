@@ -1,99 +1,101 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // 1. Lógica para mostrar/ocultar los campos de Link o Manual
+  const SUPABASE_URL = 'https://jeahmnkumhuihxvliouo.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_FV3iFcEz5o0XtTBo2qohtA__WIsKkhU';
+  const MENSAJES = {
+    'código inválido': 'El código ingresado no existe.',
+    'código ya usado': 'Este código ya fue utilizado anteriormente.'
+  };
+ 
+  // 1. Mostrar/ocultar campos de Link o Manual
   document.querySelectorAll('.select-tipo').forEach((select, index) => {
     select.addEventListener('change', (e) => {
-      const num = index + 1; 
-      const grupoLink = document.getElementById(`grupo-link-${num}`);
-      const grupoManual = document.getElementById(`grupo-manual-${num}`);
-      
-      if (e.target.value === 'link') {
-        grupoLink.classList.remove('oculto');
-        grupoManual.classList.add('oculto');
-        document.getElementById(`link${num}`).required = true;
-        document.getElementById(`titulo${num}`).required = false;
-        document.getElementById(`artista${num}`).required = false;
-      } else {
-        grupoLink.classList.add('oculto');
-        grupoManual.classList.remove('oculto');
-        document.getElementById(`link${num}`).required = false;
-        document.getElementById(`titulo${num}`).required = true;
-        document.getElementById(`artista${num}`).required = true;
-      }
+      const num = index + 1;
+      const esLink = e.target.value === 'link';
+      document.getElementById(`grupo-link-${num}`).classList.toggle('oculto', !esLink);
+      document.getElementById(`grupo-manual-${num}`).classList.toggle('oculto', esLink);
+      document.getElementById(`link${num}`).required = esLink;
+      document.getElementById(`titulo${num}`).required = !esLink;
+      document.getElementById(`artista${num}`).required = !esLink;
     });
   });
-
-  // 2. Lógica para enviar los datos a Supabase
+ 
+  // 2. Leer una canción como objeto (formato que espera la base)
+  function leerCancion(num) {
+    const tipo = document.getElementById(`tipo${num}`).value;
+    if (tipo === 'link') {
+      const link = document.getElementById(`link${num}`).value.trim().split('?')[0];
+      if (!/^https:\/\/open\.spotify\.com\/(intl-[a-z-]+\/)?track\/[A-Za-z0-9]+/.test(link)) {
+        throw new Error(`El link de la canción ${num} no es una canción de Spotify.`);
+      }
+      return { titulo: 'Tema desde Spotify', artista: 'Spotify', link_spotify: link };
+    }
+    const titulo = document.getElementById(`titulo${num}`).value.trim();
+    const artista = document.getElementById(`artista${num}`).value.trim();
+    if (!titulo || !artista) {
+      throw new Error(`Completá título y artista de la canción ${num}.`);
+    }
+    return { titulo: titulo, artista: artista, link_spotify: null };
+  }
+ 
+  // 3. Enviar a Supabase
   const form = document.getElementById('formPedido');
-  
+  const btn = document.getElementById('btnEnviar');
+  const errorDiv = document.getElementById('mensajeError');
+ 
+  function mostrarError(texto) {
+    errorDiv.textContent = texto;
+    errorDiv.classList.remove('oculto');
+  }
+ 
   form.addEventListener('submit', async (e) => {
-    e.preventDefault(); // Evita que la página recargue
-
-    const btn = document.getElementById('btnEnviar');
-    const errorDiv = document.getElementById('mensajeError');
-    
-    // Estado de carga
+    e.preventDefault();
+    errorDiv.classList.add('oculto');
+ 
+    const codigo = document.getElementById('codigo').value.trim().toUpperCase();
+    const nombre = document.getElementById('nombre').value.trim();
+ 
+    let canciones;
+    try {
+      canciones = [leerCancion(1), leerCancion(2)];
+    } catch (err) {
+      mostrarError(err.message);
+      return;
+    }
+ 
     btn.textContent = 'Enviando...';
     btn.disabled = true;
-    errorDiv.classList.add('oculto');
-
-    // Recolectar Código y Nombre
-    const codigo = document.getElementById('codigo').value;
-    const nombre = document.getElementById('nombre').value;
-
-    // Recolectar Canción 1
-    const tipo1 = document.getElementById('tipo1').value;
-    let cancion1 = "";
-    if (tipo1 === 'link') {
-        cancion1 = document.getElementById('link1').value;
-    } else {
-        cancion1 = document.getElementById('titulo1').value + ' - ' + document.getElementById('artista1').value;
-    }
-
-    // Recolectar Canción 2
-    const tipo2 = document.getElementById('tipo2').value;
-    let cancion2 = "";
-    if (tipo2 === 'link') {
-        cancion2 = document.getElementById('link2').value;
-    } else {
-        cancion2 = document.getElementById('titulo2').value + ' - ' + document.getElementById('artista2').value;
-    }
-
-    // Armar el paquete de datos exacto que espera tu api.php
-    const payload = {
-        codigo: codigo,
-        nombre: nombre,
-        canciones: [cancion1, cancion2]
-    };
-
+ 
     try {
-        // Enviar al backend
-        const response = await fetch('api.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        });
-
-        const result = await response.json();
-
-        if (response.ok) {
-            // Éxito: Ocultar formulario y mostrar cartel de confirmación
-            document.getElementById('pantallaFormulario').classList.add('oculto');
-            document.getElementById('pantallaExito').classList.remove('oculto');
-        } else {
-            // Error de Supabase (ej: código inválido o ya usado)
-            errorDiv.textContent = result.error || result.message || 'Error al enviar los temas.';
-            errorDiv.classList.remove('oculto');
-        }
+      const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/canjear_codigo`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`
+        },
+        body: JSON.stringify({
+          p_codigo: codigo,
+          p_nombre: nombre || null,
+          p_canciones: canciones
+        })
+      });
+ 
+      if (response.ok) {
+        document.getElementById('pantallaFormulario').classList.add('oculto');
+        document.getElementById('pantallaExito').classList.remove('oculto');
+      } else {
+        let mensaje = 'No pudimos enviar tus temas. Probá de nuevo.';
+        try {
+          const r = await response.json();
+          mensaje = MENSAJES[r.message] || r.message || mensaje;
+        } catch (_) {}
+        mostrarError(mensaje);
+      }
     } catch (error) {
-        // Error de red
-        errorDiv.textContent = 'Error de conexión. Verificá tu internet e intentá de nuevo.';
-        errorDiv.classList.remove('oculto');
+      mostrarError('Error de conexión. Verificá tu internet e intentá de nuevo.');
     } finally {
-        // Restaurar el botón
-        btn.textContent = 'Enviar mis temas';
-        btn.disabled = false;
+      btn.textContent = 'Enviar mis temas';
+      btn.disabled = false;
     }
   });
 });
