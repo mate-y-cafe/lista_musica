@@ -1,0 +1,174 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Karla:wght@400;500;600;700&display=swap');
+
+:root {
+  --crema-fondo: #FDFBF7;
+  --crema-input: #FAF8F5; /* El color súper clarito de los inputs */
+  --verde-oscuro: #1A3E24; /* El verde profundo del título */
+  --verde-boton: #3B5E2B;
+  --verde-hover: #2F4C22;
+  --marron-labels: #85705a; /* El tono marrón/café de las mayúsculas */
+  --borde-input: #DCD2C4;
+  --texto-gris: #6B5A4E;
+  
+  --font-titulos: "Fraunces", Georgia, serif;
+  --font-textos: "Karla", system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #F4EFE6; /* Fondo de la página detrás de la tarjeta */
+  color: var(--texto-gris);
+  font-family: var(--font-textos);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.container {
+  width: 100%;
+  max-width: 440px;
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 40px 30px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.oculto {
+  display: none !important;
+}
+
+.logo-container img {
+  max-width: 70px;
+  border-radius: 50%;
+  margin: 0 auto 20px auto;
+  display: block;
+}
+
+h1, h2 {
+  font-family: var(--font-titulos);
+  font-weight: 600;
+  color: var(--verde-oscuro);
+  font-size: 32px;
+  margin-bottom: 10px;
+}
+
+.subtitulo {
+  color: var(--texto-gris);
+  font-size: 15px;
+  margin-bottom: 25px;
+}
+
+.campo {
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+label {
+  display: block;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--marron-labels);
+  margin-bottom: 8px;
+}
+
+input[type="text"], input[type="url"] {
+  width: 100%;
+  font-family: var(--font-textos);
+  font-size: 15px;
+  color: #333;
+  background-color: var(--crema-input);
+  border: 1px solid var(--borde-input);
+  border-radius: 12px; /* Redondeo exacto de la foto */
+  padding: 14px 16px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+input[type="text"]::placeholder, input[type="url"]::placeholder {
+  color: #9da0a5;
+}
+
+input[type="text"]:focus, input[type="url"]:focus {
+  border-color: var(--verde-boton);
+  background-color: #fff;
+  box-shadow: 0 0 0 3px rgba(59, 94, 43, 0.1);
+}
+
+/* El bloque de título de canción con el menú desplegable */
+.header-cancion {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.header-cancion label {
+  margin-bottom: 0;
+}
+
+.select-tipo {
+  background-color: #EFEAE1;
+  border: none;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-family: var(--font-textos);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--texto-gris);
+  cursor: pointer;
+  outline: none;
+}
+
+button[type="submit"] {
+  width: 100%;
+  font-family: var(--font-textos);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  padding: 16px 20px;
+  border: none;
+  border-radius: 12px; /* Botón de enviar redondeado */
+  background: var(--texto-gris); /* Tono marrón que mostraste en otro diseño */
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-top: 10px;
+}
+
+button[type="submit"]:hover {
+  background: #4b3e34;
+}
+
+.icono-exito {
+  font-size: 40px;
+  color: var(--verde-boton);
+  margin-bottom: 10px;
+}
+
+.mensaje {
+  margin-top: 16px;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.error {
+  background: #fdf3f2;
+  color: #d32f2f;
+  border: 1px solid #ffcdd2;
+}

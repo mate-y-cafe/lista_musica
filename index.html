@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Elegí la música - Mate & Café</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <main class="container">
+    <!-- Logo -->
+    <div class="logo-container">
+      <img src="Gemini_Generated_Image_7ohcpx7ohcpx7ohc.jfif" alt="Logo Mate y Café">
+    </div>
+
+    <div id="pantallaFormulario">
+      <h1>Elegí la música</h1>
+      <p class="subtitulo">Sumá 2 canciones a la playlist del local con tu código.</p>
+
+      <form id="formPedido">
+        <!-- Campo Código -->
+        <div class="campo">
+          <label for="codigo">Código de la promo *</label>
+          <input type="text" id="codigo" placeholder="Ej. PRUEBA1" required>
+        </div>
+
+        <!-- Campo Nombre -->
+        <div class="campo">
+          <label for="nombre">Tu nombre o apodo (Opcional)</label>
+          <input type="text" id="nombre" placeholder="Ej. Julián">
+        </div>
+
+        <!-- Canción 1 -->
+        <div class="campo">
+          <div class="header-cancion">
+            <label>🎵 Canción 1</label>
+            <select class="select-tipo" id="tipo1">
+              <option value="link">Link Spotify</option>
+              <option value="manual">Escribir a mano</option>
+            </select>
+          </div>
+          <div id="grupo-link-1" class="grupo-input">
+            <input type="url" id="link1" placeholder="https://open.spotify.com/track/...">
+          </div>
+          <div id="grupo-manual-1" class="grupo-input oculto">
+            <input type="text" id="titulo1" placeholder="Título del tema">
+            <input type="text" id="artista1" placeholder="Artista" style="margin-top: 8px;">
+          </div>
+        </div>
+
+        <!-- Canción 2 -->
+        <div class="campo">
+          <div class="header-cancion">
+            <label>🎵 Canción 2</label>
+            <select class="select-tipo" id="tipo2">
+              <option value="link">Link Spotify</option>
+              <option value="manual">Escribir a mano</option>
+            </select>
+          </div>
+          <div id="grupo-link-2" class="grupo-input">
+            <input type="url" id="link2" placeholder="https://open.spotify.com/track/...">
+          </div>
+          <div id="grupo-manual-2" class="grupo-input oculto">
+            <input type="text" id="titulo2" placeholder="Título del tema">
+            <input type="text" id="artista2" placeholder="Artista" style="margin-top: 8px;">
+          </div>
+        </div>
+
+        <button type="submit" id="btnEnviar">Enviar mis temas</button>
+      </form>
+
+      <div id="mensajeError" class="mensaje error oculto"></div>
+    </div>
+
+    <!-- Pantalla de Éxito -->
+    <div id="pantallaExito" class="oculto">
+      <div class="icono-exito">✓</div>
+      <h2>¡Listo! Tus temas están en la cola</h2>
+      <p>En un ratito más los vamos a estar sonando en el local. ¡Que disfrutes tu promo! ☕</p>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
